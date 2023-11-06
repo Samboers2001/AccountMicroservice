@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
+Console.WriteLine("Using MariaDB");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(configuration.GetConnectionString("AccountConn"), new MySqlServerVersion(new Version(11, 1, 2))));
 
@@ -23,6 +24,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
+
 // Adding Jwt Bearer
 .AddJwtBearer(options =>
 {
@@ -37,6 +39,10 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTAuth:SecretKey"]))
     };
 });
+builder.Services.AddCors(options => 
+{
+    options.AddPolicy("AllowLocalhost", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -47,12 +53,21 @@ builder.Services.AddHostedService<MessageBusSubscriber>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowLocalhost");
 
 app.UseHttpsRedirection();
 
