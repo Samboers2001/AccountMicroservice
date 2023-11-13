@@ -16,3 +16,8 @@ steps:
   - './K8S/GKE/account-database/mariadb-account-secret.yaml' # Apply database Secret
   - './K8S/GKE/account-database/mariadb-account-depl.yaml'             # Apply database Deployment and Service
   - './K8S/GKE/account-service/account-depl.yaml'             # Apply account service Deployment, Service, and PVC
+
+options:
+  build:
+    service_account: 264096596366@cloudbuild.gserviceaccount.com
+    logs_bucket: gs://accountci-logs-bucket
