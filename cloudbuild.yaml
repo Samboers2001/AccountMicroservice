@@ -1,9 +1,9 @@
 steps:
 # Build and push Docker image for the account service
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/ordering-system-404411/account-service:$COMMIT_SHA', '.']
+  args: ['build', '-t', 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/ordering-system-404411/account-service:$COMMIT_SHA']
+  args: ['push', 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA']
 
 # Fetch Kubernetes configuration for the account service
 - name: 'gcr.io/cloud-builders/git'
@@ -17,18 +17,4 @@ steps:
   - './K8S/GKE/account-database/mariadb-account-depl.yaml'             # Apply database Deployment and Service
   - './K8S/GKE/account-service/account-depl.yaml'             # Apply account service Deployment, Service, and PVC
 
-options:
-  substitution_option: 'ALLOW_LOOSE'
-  machineType: 'N1_HIGHCPU_8'
-  timeout: '1600s' 
-  service_account_email: '264096596366@cloudbuild.gserviceaccount.com'
-  logging: 'LEGACY'
-  env: ['COMMIT_SHA=$COMMIT_SHA']
-  secretEnv: ['DOCKER_PASSWORD']
-  volumes:
-    - name: 'builder-home'
-      path: '/root'
-  sourceProvenanceHash: ['MD5','SHA256']
-  secretManagerSecret: 'projects/207420192474/secrets/secret/versions/latest'
-  dynamicSubstitutions: true
-  logsBucket: 'gs://accountci-logs-bucket'  # Replace with your actual Google Cloud Storage bucket name
+logsBucket: 'gs://acountci-logs-bucket'
