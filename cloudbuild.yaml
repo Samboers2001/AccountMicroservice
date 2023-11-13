@@ -17,4 +17,4 @@ steps:
   - './K8S/GKE/account-database/mariadb-account-depl.yaml'             # Apply database Deployment and Service
   - './K8S/GKE/account-service/account-depl.yaml'             # Apply account service Deployment, Service, and PVC
 
-logsBucket: 'gs://acountci-logs-bucket'
+logsBucket: 'gs://acountci-logs-bucket' 
