@@ -31,4 +31,4 @@ options:
   sourceProvenanceHash: ['MD5','SHA256']
   secretManagerSecret: 'projects/207420192474/secrets/secret/versions/latest'
   dynamicSubstitutions: true
-  logBucket: 'gs://accountci-logs-bucket'  # Replace with your actual Google Cloud Storage bucket name
+  logsBucket: 'gs://accountci-logs-bucket'  # Replace with your actual Google Cloud Storage bucket name
