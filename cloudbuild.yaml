@@ -12,13 +12,35 @@ steps:
       - "push"
       - "gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA"
 
-  # Fetch Kubernetes configuration for the account service
-  - name: "gcr.io/cloud-builders/git"
+  # Access the id_github file from Secret Manager, and setup SSH
+  - name: 'gcr.io/cloud-builders/git'
+    secretEnv: ['SSH_KEY']
+    entrypoint: 'bash'
     args:
-      - "clone"
-      - "https://$$github-personal-access-token@github.com/Samboers2001/K8S.git"
-      - "K8S"
-    secretEnv: ["github-personal-access-token"]
+    - -c
+    - |
+      echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+      chmod 400 /root/.ssh/id_rsa
+      cp known_hosts.github /root/.ssh/known_hosts
+    volumes:
+    - name: 'ssh'
+      path: /root/.ssh
+
+  # Clone the repository
+  - name: 'gcr.io/cloud-builders/git'
+    args:
+    - clone
+    - --recurse-submodules
+    - git@github.com:Samboers2001/K8S
+    volumes:
+    - name: 'ssh'
+      path: /root/.ssh
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/264096596366/secrets/github-ssh-key/versions/1
+    env: 'SSH_KEY'
+
  
  
   - name: "gcr.io/cloud-builders/kubectl"
@@ -30,9 +52,5 @@ steps:
       - "./K8S/GKE/account-database/mariadb-account-depl.yaml" # Apply database Deployment and Service
       - "./K8S/GKE/account-service/account-depl.yaml" # Apply account service Deployment, Service, and PVC
 
-availableSecrets:
-  secretManager:
-    - versionName: projects/264096596366/secrets/github-personal-access-token/versions/1
-      env: "github-personal-access-token"
 
 logsBucket: "gs://accountci-logs-bucket"
