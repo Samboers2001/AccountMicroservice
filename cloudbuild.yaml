@@ -16,7 +16,7 @@ steps:
   - name: "gcr.io/cloud-builders/git"
     args:
       - "clone"
-      - "https://$$github-personal-access-token@github.com/Samboers2001/K8S"
+      - "https://$github-personal-access-token@github.com/Samboers2001/K8S"
       - "K8S"
     secretEnv: ["github-personal-access-token"]
  
