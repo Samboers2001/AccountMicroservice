@@ -7,7 +7,7 @@ steps:
 
 # Fetch Kubernetes configuration for the account service
 - name: 'gcr.io/cloud-builders/git'
-  args: ['clone', 'https://github.com/Samboers2001/K8S', 'K8S']
+  args: ['clone', 'https://$(github-personal-access-token)@github.com/Samboers2001/K8S', 'K8S']
 - name: 'gcr.io/cloud-builders/kubectl'
   args:
   - 'apply'
