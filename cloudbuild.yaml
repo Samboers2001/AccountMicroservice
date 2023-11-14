@@ -30,10 +30,9 @@ steps:
       - "./K8S/GKE/account-database/mariadb-account-depl.yaml" # Apply database Deployment and Service
       - "./K8S/GKE/account-service/account-depl.yaml" # Apply account service Deployment, Service, and PVC
 
-
 availableSecrets:
   secretManager:
     - versionName: projects/264096596366/secrets/github-personal-access-token/versions/1
       env: "github-personal-access-token"
 
-logsBucket: "gs://accountci-logs-bucket"   
+logsBucket: "gs://accountci-logs-bucket"
