@@ -30,7 +30,7 @@ steps:
   - name: 'gcr.io/cloud-builders/git'
     args:
     - clone
-    - --recurse-submodules
+    - --recurse-submodules 
     - git@github.com:Samboers2001/K8S
     volumes:
     - name: 'ssh'
