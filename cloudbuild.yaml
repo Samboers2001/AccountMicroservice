@@ -36,10 +36,7 @@ steps:
     - name: 'ssh'
       path: /root/.ssh
 
-availableSecrets:
-  secretManager:
-  - versionName: projects/264096596366/secrets/github-ssh-key/versions/1
-    env: 'SSH_KEY'
+
 
  
  
@@ -54,3 +51,8 @@ availableSecrets:
 
 
 logsBucket: "gs://accountci-logs-bucket"
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/264096596366/secrets/github-ssh-key/versions/1
+    env: 'SSH_KEY'
