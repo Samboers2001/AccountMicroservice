@@ -18,8 +18,11 @@ steps:
       - "clone"
       - "https://$$github-personal-access-token@github.com/Samboers2001/K8S"
       - "K8S"
-    secretEnv: ["github-personal-access-token"]
-
+  
+availableSecrets:
+  secretManager:
+    - versionName: projects/ordering-system-404411/secrets/github-personal-access-token/versions/latest
+      env: "github-personal-access-token"
 
   - name: "gcr.io/cloud-builders/kubectl"
     args:
@@ -29,11 +32,5 @@ steps:
       - "./K8S/GKE/account-database/mariadb-account-secret.yaml" # Apply database Secret
       - "./K8S/GKE/account-database/mariadb-account-depl.yaml" # Apply database Deployment and Service
       - "./K8S/GKE/account-service/account-depl.yaml" # Apply account service Deployment, Service, and PVC
-
-
-  availableSecrets:
-    secretManager:
-      - versionName: projects/ordering-system-404411/secrets/github-personal-access-token/versions/latest
-        env: "github-personal-access-token"
 
 logsBucket: "gs://accountci-logs-bucket"
