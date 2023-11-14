@@ -1,25 +1,36 @@
 steps:
-# Build and push Docker image for the account service
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA']
+  # Build and push Docker image for the account service
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      ["push", "gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA"]
 
-# Fetch Kubernetes configuration for the account service
-- name: 'gcr.io/cloud-builders/git'
-  args: ['clone', 'https://$$github-personal-access-token@github.com/Samboers2001/K8S', 'K8S']
-- name: 'gcr.io/cloud-builders/kubectl'
-  args:
-  - 'apply'
-  - '-f'
-  - './K8S/GKE/account-database/account-gke-pvc.yaml'    # Apply database PVC
-  - './K8S/GKE/account-database/mariadb-account-secret.yaml' # Apply database Secret
-  - './K8S/GKE/account-database/mariadb-account-depl.yaml'             # Apply database Deployment and Service
-  - './K8S/GKE/account-service/account-depl.yaml'             # Apply account service Deployment, Service, and PVC
+  # Fetch Kubernetes configuration for the account service
+  - name: "gcr.io/cloud-builders/git"
+    args:
+      [
+        "clone",
+        "https://$$github-personal-access-token@github.com/Samboers2001/K8S",
+        "K8S",
+      ]
+  - name: "gcr.io/cloud-builders/kubectl"
+    args:
+      - "apply"
+      - "-f"
+      - "./K8S/GKE/account-database/account-gke-pvc.yaml" # Apply database PVC
+      - "./K8S/GKE/account-database/mariadb-account-secret.yaml" # Apply database Secret
+      - "./K8S/GKE/account-database/mariadb-account-depl.yaml" # Apply database Deployment and Service
+      - "./K8S/GKE/account-service/account-depl.yaml" # Apply account service Deployment, Service, and PVC
+    availableSecrets:
+      secretManager:
+        - versionName: projects/ordering-system-404411/secrets/github-personal-access-token/versions/latest
+          env: "github-personal-access-token"
 
-- availableSecrets:
-    secretManager:
-    - versionName: projects/ordering-system-404411/secrets/github-personal-access-token/versions/latest
-      env: 'github-personal-access-token'
-
-logsBucket: 'gs://accountci-logs-bucket' 
+logsBucket: "gs://accountci-logs-bucket"
