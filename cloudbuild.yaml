@@ -33,7 +33,7 @@ steps:
 
 availableSecrets:
   secretManager:
-    - versionName: projects/264096596366/secrets/github-personal-access-token/versions/*
+    - versionName: projects/264096596366/secrets/github-personal-access-token
       env: "github-personal-access-token"
 
 logsBucket: "gs://accountci-logs-bucket"   
