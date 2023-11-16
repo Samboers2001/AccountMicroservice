@@ -17,7 +17,7 @@ steps:
   args:
     - 'apply'
     - '-f'
-    - 'k8s/account-database/mariadb-secret.yaml'
+    - 'K8S/account-database/mariadb-secret.yaml'
 
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
@@ -27,7 +27,7 @@ steps:
   args:
     - 'apply'
     - '-f'
-    - 'k8s/account-database/mariadb-pvc.yaml'
+    - 'K8S/account-database/mariadb-pvc.yaml'
 
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
@@ -37,7 +37,7 @@ steps:
   args:
     - 'apply'
     - '-f'
-    - 'k8s/account-database/'
+    - 'K8S/account-database/'
 
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
@@ -48,7 +48,7 @@ steps:
   args:
     - 'apply'
     - '-f'
-    - 'k8s/account-service/'
+    - 'K8S/account-service/'
 
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
