@@ -4,13 +4,13 @@ steps:
   args:
     - 'build'
     - '-t'
-    - 'gcr.io/your-project-id/accountmicroservice:$COMMIT_SHA'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA'
     - '.'
 
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
-    - 'gcr.io/your-project-id/accountmicroservice:$COMMIT_SHA'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA'
 
 # Apply Kubernetes manifests for the account database
 - name: 'gcr.io/cloud-builders/kubectl'
@@ -54,5 +54,5 @@ steps:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
     - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
-images: ['gcr.io/your-project-id/accountmicroservice']
+images: ['gcr.io/ordering-system-404411/accountmicroservice']
 logsBucket: "gs://accountci-logs-bucket"
