@@ -55,3 +55,4 @@ steps:
     - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
 images: ['gcr.io/your-project-id/accountmicroservice']
+logsBucket: "gs://accountci-logs-bucket"
