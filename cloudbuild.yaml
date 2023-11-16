@@ -1,58 +1,57 @@
 steps:
-  # Build and push Docker image for the account service
-  - name: "gcr.io/cloud-builders/docker"
-    args:
-      - "build"
-      - "-t"
-      - "gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA"
-      - "."
+# Build and push Docker image for the account service
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '-t'
+    - 'gcr.io/your-project-id/accountmicroservice:$COMMIT_SHA'
+    - '.'
 
-  - name: "gcr.io/cloud-builders/docker"
-    args:
-      - "push"
-      - "gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA"
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'push'
+    - 'gcr.io/your-project-id/accountmicroservice:$COMMIT_SHA'
 
-  # Access the id_github file from Secret Manager, and setup SSH
-  - name: 'gcr.io/cloud-builders/git'
-    secretEnv: ['SSH_KEY']
-    entrypoint: 'bash'
-    args:
-    - -c
-    - |
-      echo "$$SSH_KEY" >> /root/.ssh/id_rsa
-      chmod 400 /root/.ssh/id_rsa
-      cp known_hosts.github /root/.ssh/known_hosts
-    volumes:
-    - name: 'ssh'
-      path: /root/.ssh
+# Apply Kubernetes manifests for the account database
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'k8s/account-database/mariadb-secret.yaml'
 
-  # Clone the repository
-  - name: 'gcr.io/cloud-builders/git'
-    args:
-    - clone
-    - --recurse-submodules 
-    - git@github.com:Samboers2001/K8S
-    volumes:
-    - name: 'ssh'
-      path: /root/.ssh
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'k8s/account-database/mariadb-pvc.yaml'
 
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
- 
- 
-  - name: "gcr.io/cloud-builders/kubectl"
-    args:
-      - "apply"
-      - "-f"
-      - "./K8S/GKE/account-database/account-gke-pvc.yaml" # Apply database PVC
-      - "./K8S/GKE/account-database/mariadb-account-secret.yaml" # Apply database Secret
-      - "./K8S/GKE/account-database/mariadb-account-depl.yaml" # Apply database Deployment and Service
-      - "./K8S/GKE/account-service/account-depl.yaml" # Apply account service Deployment, Service, and PVC
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'k8s/account-database/'
 
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
-logsBucket: "gs://accountci-logs-bucket"
+# Apply Kubernetes manifests for the account service
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'k8s/account-service/'
 
-availableSecrets:
-  secretManager:
-  - versionName: projects/264096596366/secrets/github-ssh-key/versions/1
-    env: 'SSH_KEY' 
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+
+images: ['gcr.io/your-project-id/accountmicroservice']
