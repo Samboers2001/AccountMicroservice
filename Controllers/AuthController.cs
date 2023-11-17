@@ -100,7 +100,7 @@ namespace AccountMicroservice.Controllers
             {
                 await _userManager.AddToRoleAsync(user, UserRoles.User);
             }
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            return Ok(new Response { Status = "Success", Message = "User created successfully!", Test = "Works as expected!" });
         }
 
 
