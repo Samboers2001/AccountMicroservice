@@ -11,33 +11,31 @@ spec:
     metadata:
       labels:
         app: mariadb
-    spec:
       containers:
-      - name: mariadb
-        image: mariadb
-        ports:
-        - containerPort: 3306
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secret
-              key: mariadb-root-password
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits: 
-            memory: "1Gi"
-            cpu: "500m"
-        volumeMounts:
-        - mountPath: /var/lib/mysql
-          name: mariadb
-  volumes:
-  - name: mariadb
-    persistentVolumeClaim:
-      claimName: mariadb-claim
-
+        - name: mariadb
+          image: mariadb
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: mariadb-root-password
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mariadb
+      volumes:
+        - name: mariadb
+          persistentVolumeClaim:
+            claimName: mariadb-claim
 ---
 apiVersion: v1
 kind: Service
@@ -49,10 +47,10 @@ spec:
   selector:
     app: mariadb
   ports:
-  - name: mariadb
-    protocol: TCP
-    port: 3306
-    targetPort: 3306
+    - name: mariadb
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
 ---
 apiVersion: v1
 kind: Service
@@ -64,6 +62,6 @@ spec:
   selector:
     app: mariadb
   ports:
-  - protocol: TCP
-    port: 3306
-    targetPort: 3306
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
