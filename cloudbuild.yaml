@@ -1,16 +1,20 @@
 steps:
-# Build and push Docker image for the account service
+# Build and push Docker image for the account service (multi-platform)
 - name: 'gcr.io/cloud-builders/docker'
   args:
+    - 'buildx'
+    - 'create'
+    - '--use'
+    
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'buildx'
     - 'build'
+    - '--platform=linux/amd64,linux/arm64'
     - '-t'
     - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
     - '.'
-
-- name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'push'
-    - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
+    - '--push'
 
 # Apply Kubernetes manifests for the account database
 - name: 'gcr.io/cloud-builders/kubectl'
