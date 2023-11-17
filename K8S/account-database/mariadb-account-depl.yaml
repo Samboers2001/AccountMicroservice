@@ -12,6 +12,10 @@ spec:
       labels:
         app: mariadb
     spec:
+      nodeSelector:
+        cloud.google.com/compute-class: Scale-Out
+        kubernetes.io/arch: arm64
+
       containers:
       - name: mariadb
         image: mariadb
