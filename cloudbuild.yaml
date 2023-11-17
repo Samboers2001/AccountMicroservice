@@ -10,7 +10,7 @@ steps:
   args:
     - 'buildx'
     - 'build'
-    - '--platform=linux/amd64,linux/arm64'
+    - '--platform=linux/arm64'
     - '-t'
     - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
     - '.'
