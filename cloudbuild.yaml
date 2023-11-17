@@ -5,7 +5,6 @@ steps:
     - 'build'
     - '-t'
     - 'gcr.io/ordering-system-404411/accountmicroservice:latest-arm64'
-    - '--platform=linux/arm64'
     - '.'
 
 - name: 'gcr.io/cloud-builders/docker'

@@ -11,11 +11,6 @@ spec:
     metadata:
       labels:
         app: mariadb
-    spec:
-      nodeSelector:
-        cloud.google.com/compute-class: Scale-Out
-        kubernetes.io/arch: arm64
-
       containers:
       - name: mariadb
         image: mariadb
@@ -31,7 +26,7 @@ spec:
           requests:
             memory: "256Mi"
             cpu: "250m"
-          limits:
+          limits: 
             memory: "1Gi"
             cpu: "500m"
         volumeMounts:
