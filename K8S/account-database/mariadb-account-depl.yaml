@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         app: mariadb
+    spec:
       containers:
       - name: mariadb
         image: mariadb
@@ -32,10 +33,11 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: mariadb
-      volumes:
-      - name: mariadb
-        persistentVolumeClaim:
-          claimName: mariadb-claim
+  volumes:
+  - name: mariadb
+    persistentVolumeClaim:
+      claimName: mariadb-claim
+
 ---
 apiVersion: v1
 kind: Service
