@@ -4,13 +4,13 @@ steps:
   args:
     - 'build'
     - '-t'
-    - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA'
     - '.'
 
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
-    - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA'
 
 # Apply Kubernetes manifests for the account database
 - name: 'gcr.io/cloud-builders/kubectl'
