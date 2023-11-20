@@ -54,17 +54,5 @@ steps:
       - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
       - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
-  # Rolling restart of the deployment
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args:
-      - 'rollout'
-      - 'restart'
-      - 'deployment'
-      - 'account-depl'
-
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
-
 images: ['gcr.io/ordering-system-404411/accountmicroservice:latest']
 logsBucket: "gs://accountci-logs-bucket"
