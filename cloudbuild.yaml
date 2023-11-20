@@ -4,24 +4,13 @@ steps:
   args:
     - 'build'
     - '-t'
-    - 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
     - '.'
 
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
-    - 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA'
-    
-- name: 'gcr.io/cloud-builders/kubectl'
-  args:
-    - 'create'
-    - 'configmap'
-    - 'commit-sha-config'
-    - '--from-literal=COMMIT_SHA=$COMMIT_SHA'
-  env:
-    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
-
+    - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
 
 # Apply Kubernetes manifests for the account database
 - name: 'gcr.io/cloud-builders/kubectl'
@@ -64,9 +53,19 @@ steps:
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
     - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
-    - 'COMMIT_SHA=$COMMIT_SHA'
 
-images: ['gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA']
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+      - 'rollout'
+      - 'restart'
+      - 'deployment'
+      - 'account-depl'
+
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+
+images: ['gcr.io/ordering-system-404411/accountmicroservice:latest']
 logsBucket: "gs://accountci-logs-bucket"
 
 
