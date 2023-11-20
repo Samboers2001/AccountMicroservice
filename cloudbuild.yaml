@@ -53,8 +53,9 @@ steps:
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
     - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+    - 'COMMIT_SHA=$COMMIT_SHA'
 
-images: ['gcr.io/ordering-system-404411/accountmicroservice']
+images: ['gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA']
 logsBucket: "gs://accountci-logs-bucket"
 
 
