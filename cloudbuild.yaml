@@ -60,7 +60,8 @@ steps:
       - 'restart'
       - 'deployment'
       - 'account-depl'
-      - '-n ordering-system'
+      - '-n' 
+      - 'ordering-system'
 
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
