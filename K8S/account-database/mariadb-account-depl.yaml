@@ -22,13 +22,13 @@ spec:
                 secretKeyRef:
                   name: mariadb-secret
                   key: mariadb-root-password
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "1Gi"
-              cpu: "500m"
+          # resources:
+          #   requests:
+          #     memory: "256Mi"
+          #     cpu: "250m"
+          #   limits:
+          #     memory: "1Gi"
+          #     cpu: "500m"
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mariadb

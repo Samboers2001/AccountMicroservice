@@ -1,16 +1,16 @@
 steps:
-# Build and push Docker image for the account service (arm64)
+# Build and push Docker image for the account service
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'build'
     - '-t'
-    - 'gcr.io/ordering-system-404411/accountmicroservice:latest-arm64'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
     - '.'
 
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
-    - 'gcr.io/ordering-system-404411/accountmicroservice:latest-arm64'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
 
 # Apply Kubernetes manifests for the account database
 - name: 'gcr.io/cloud-builders/kubectl'
