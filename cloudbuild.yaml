@@ -1,58 +1,72 @@
 steps:
-  # Build and push Docker image for the account service
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-t'
-      - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
-      - '.'
+# Build and push Docker image for the account service
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '-t'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA'
+    - '.'
 
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'push'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA'
+    
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'create'
+    - 'configmap'
+    - 'commit-sha-config'
+    - '--from-literal=COMMIT_SHA=$COMMIT_SHA'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
-  # Apply Kubernetes manifests for the account database
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args:
-      - 'apply'
-      - '-f'
-      - 'K8S/account-database/mariadb-account-secret.yaml'
 
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+# Apply Kubernetes manifests for the account database
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'K8S/account-database/mariadb-account-secret.yaml'
 
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args:
-      - 'apply'
-      - '-f'
-      - 'K8S/account-database/account-mariadb-gke-pvc.yaml'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'K8S/account-database/account-mariadb-gke-pvc.yaml'
 
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args:
-      - 'apply'
-      - '-f'
-      - 'K8S/account-database/mariadb-account-depl.yaml'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'K8S/account-database/mariadb-account-depl.yaml'
 
-  # Apply Kubernetes manifests for the account service
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args:
-      - 'apply'
-      - '-f'
-      - 'K8S/account-service/account-depl.yaml'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
 
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+# Apply Kubernetes manifests for the account service
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'K8S/account-service/account-depl.yaml'
 
-images: ['gcr.io/ordering-system-404411/accountmicroservice:latest']
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+    - 'COMMIT_SHA=$COMMIT_SHA'
+
+images: ['gcr.io/ordering-system-404411/accountmicroservice:$COMMIT_SHA']
 logsBucket: "gs://accountci-logs-bucket"
+
+
