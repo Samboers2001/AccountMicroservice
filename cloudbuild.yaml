@@ -1,23 +1,73 @@
 steps:
 # Build and push Docker image for the account service
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/ordering-system-404411/account-service:$COMMIT_SHA', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/ordering-system-404411/account-service:$COMMIT_SHA']
+  args:
+    - 'build'
+    - '-t'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
+    - '.'
 
-# Fetch Kubernetes configuration for the account service
-- name: 'gcr.io/cloud-builders/git'
-  args: ['clone', 'https://github.com/Samboers2001/K8S', 'K8S']
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'push'
+    - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
+
+# Apply Kubernetes manifests for the account database
 - name: 'gcr.io/cloud-builders/kubectl'
   args:
-  - 'apply'
-  - '-f'
-  - './K8S/GKE/account-database/account-gke-pvc.yaml'    # Apply database PVC
-  - './K8S/GKE/account-database/mariadb-account-secret.yaml' # Apply database Secret
-  - './K8S/GKE/account-database/mariadb-account-depl.yaml'             # Apply database Deployment and Service
-  - './K8S/GKE/account-service/account-depl.yaml'             # Apply account service Deployment, Service, and PVC
+    - 'apply'
+    - '-f'
+    - 'K8S/account-database/mariadb-account-secret.yaml'
 
-options:
-  build:
-    service_account: 264096596366@cloudbuild.gserviceaccount.com
-    logs_bucket: gs://accountci-logs-bucket
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'K8S/account-database/account-mariadb-gke-pvc.yaml'
+
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'K8S/account-database/mariadb-account-depl.yaml'
+
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+
+# Apply Kubernetes manifests for the account service
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'K8S/account-service/account-depl.yaml'
+
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+      - 'rollout'
+      - 'restart'
+      - 'deployment'
+      - 'account-depl'
+      - '-n' 
+      - 'ordering-system'
+
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+
+images: ['gcr.io/ordering-system-404411/accountmicroservice:latest']
+logsBucket: "gs://accountci-logs-bucket"
+
+
