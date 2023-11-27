@@ -1,5 +1,7 @@
 using System.Text;
-using AccountMicroservice.AsyncDataServices;
+using AccountMicroservice.AsyncDataServices.Subscriber;
+using AccountMicroservice.AsyncDataServices.Implementations;
+using AccountMicroservice.AsyncDataServices.Interfaces;
 using AccountMicroservice.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -48,7 +50,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddHostedService<MessageBusSubscriber>();
+// builder.Services.AddHostedService<MessageBusSubscriber>();
+builder.Services.AddScoped<IMessageBusClient, MessageBusClient>();
+
 
 
 var app = builder.Build();

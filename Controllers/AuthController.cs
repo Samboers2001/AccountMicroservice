@@ -1,6 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AccountMicroservice.AsyncDataServices.Interfaces;
+using AccountMicroservice.MessageBusEvents;
 using AccountMicroservice.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +17,16 @@ namespace AccountMicroservice.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly IMessageBusClient _messageBusClient;
         public AuthController(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,  
-            IConfiguration configuration)
+            IConfiguration configuration, IMessageBusClient messageBusClient)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _messageBusClient = messageBusClient;
         }
 
         [HttpPost]
@@ -69,6 +73,12 @@ namespace AccountMicroservice.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+
+            UserRegisteredEvent userRegisteredEvent = new UserRegisteredEvent
+            {
+                UserId = user.Id
+            };
+            _messageBusClient.PublishMessage(userRegisteredEvent);
             return Ok(new Response { Status = "Success", Message = "User created successfully!", Test = "Still, Yeah, Still works as expected!"});
         }
 
