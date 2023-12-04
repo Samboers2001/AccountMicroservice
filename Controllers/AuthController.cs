@@ -128,7 +128,7 @@ namespace AccountMicroservice.Controllers
             {
                 UserId = user.Id
             };
-            _messageBusClient.PublishMessage(userRegisteredEvent);
+            _messageBusClient.PublishMessage(userRegisteredEvent, "user.registered");
             return Ok(new Response { Status = "Success", Message = "User created successfully!", Test = "Still, Yeah, Still works as expected!" });
         }
 

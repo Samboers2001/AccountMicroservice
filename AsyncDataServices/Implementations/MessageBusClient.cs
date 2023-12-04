@@ -26,7 +26,7 @@ namespace AccountMicroservice.AsyncDataServices.Implementations
                 _connection = factory.CreateConnection();
                 _channel = _connection.CreateModel(); 
 
-                _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
+                _channel.ExchangeDeclare(exchange: "topic-exchange", type: ExchangeType.Topic);
 
                 _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
@@ -38,12 +38,12 @@ namespace AccountMicroservice.AsyncDataServices.Implementations
             }
         }
 
-        public void PublishMessage<T>(T message)
+        public void PublishMessage<T>(T message, string routingKey)
         {
             string serializedMessage = JsonSerializer.Serialize(message);
             byte[] body = Encoding.UTF8.GetBytes(serializedMessage);
-
-            _channel.BasicPublish(exchange: "trigger", routingKey: "", basicProperties: null, body: body);
+            
+            _channel.BasicPublish(exchange: "topic-exchange", routingKey: routingKey, basicProperties: null, body: body);
             Console.WriteLine($"--> Message published: {serializedMessage}");
         }
 
