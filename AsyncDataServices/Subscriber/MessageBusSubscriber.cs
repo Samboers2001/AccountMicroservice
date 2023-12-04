@@ -2,7 +2,7 @@ using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace AccountMicroservice.AsyncDataServices
+namespace AccountMicroservice.AsyncDataServices.Subscriber
 {
     public class MessageBusSubscriber : BackgroundService
     {
