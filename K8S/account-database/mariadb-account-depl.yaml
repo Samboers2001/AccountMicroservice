@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mariadb-depl
+  name: mariadb-account-depl
   namespace: ordering-system
 spec:
   selector:
     matchLabels:
-      app: mariadb
+      app: mariadb-account
   template:
     metadata:
       labels:
-        app: mariadb
+        app: mariadb-account
     spec:
       containers:
         - name: mariadb
@@ -21,26 +21,26 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mariadb-secret
+                  name: mariadb-account-secret
                   key: mariadb-root-password
 
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mariadb
       volumes:
-        - name: mariadb
+        - name: mariadb-account-volume
           persistentVolumeClaim:
-            claimName: mariadb-claim
+            claimName: mariadb-account-claim
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb-clusterip-srv
+  name: mariadb-account-clusterip-srv
   namespace: ordering-system
 spec:
   type: ClusterIP
   selector:
-    app: mariadb
+    app: mariadb-account
   ports:
     - name: mariadb
       protocol: TCP
@@ -50,12 +50,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb-loadbalancer
+  name: mariadb-account-loadbalancer
   namespace: ordering-system
 spec:
   type: LoadBalancer
   selector:
-    app: mariadb
+    app: mariadb-account
   ports:
     - protocol: TCP
       port: 3306
