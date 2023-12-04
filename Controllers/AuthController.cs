@@ -23,7 +23,7 @@ namespace AccountMicroservice.Controllers
         private readonly IMessageBusClient _messageBusClient;
         public AuthController(
             UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,  
+            RoleManager<IdentityRole> roleManager,
             IConfiguration configuration, IMessageBusClient messageBusClient)
         {
             _userManager = userManager;
@@ -55,12 +55,33 @@ namespace AccountMicroservice.Controllers
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });
-            } else 
+            }
+            else
             {
                 throw new AppException("Username or password is incorrect");
             }
         }
 
+        [HttpGet]
+        [Route("userdetails")]
+        public async Task<IActionResult> GetUserDetails()
+        {
+            var username = User.Identity.Name;
+            if (username == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var roles = await _userManager.GetRolesAsync(user); // get the roles of the user
+
+            return Ok(new { user, roles });
+        }
 
         [HttpPost]
         [Route("register")]
@@ -108,7 +129,7 @@ namespace AccountMicroservice.Controllers
                 UserId = user.Id
             };
             _messageBusClient.PublishMessage(userRegisteredEvent);
-            return Ok(new Response { Status = "Success", Message = "User created successfully!", Test = "Still, Yeah, Still works as expected!"});
+            return Ok(new Response { Status = "Success", Message = "User created successfully!", Test = "Still, Yeah, Still works as expected!" });
         }
 
         [HttpPost]
@@ -143,7 +164,7 @@ namespace AccountMicroservice.Controllers
         }
 
 
-            private JwtSecurityToken GetToken(List<Claim> authClaims)
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTAuth:SecretKey"]));
             var token = new JwtSecurityToken(
