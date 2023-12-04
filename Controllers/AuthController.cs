@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AccountMicroservice.AsyncDataServices.Interfaces;
+using AccountMicroservice.Helpers;
 using AccountMicroservice.MessageBusEvents;
 using AccountMicroservice.Models;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +18,8 @@ namespace AccountMicroservice.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        Lib lib = new Lib();
+
         private readonly IMessageBusClient _messageBusClient;
         public AuthController(
             UserManager<IdentityUser> userManager,
@@ -52,8 +55,10 @@ namespace AccountMicroservice.Controllers
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });
+            } else 
+            {
+                throw new AppException("Username or password is incorrect");
             }
-            return Unauthorized();
         }
 
 
@@ -61,6 +66,30 @@ namespace AccountMicroservice.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] Register model)
         {
+            if (!lib.UsernameIsEmpty(model.Username))
+            {
+                throw new AppException("Name is required");
+            }
+            else if (!lib.EmailIsEmpty(model.Email))
+            {
+                throw new AppException("Email is required");
+            }
+            else if (!lib.IsValidEmail(model.Email))
+            {
+                throw new AppException("Email '" + model.Email + "' is not valid");
+            }
+            else if (_userManager.Users.Any(x => x.Email == model.Email))
+            {
+                throw new AppException("Email '" + model.Email + "' is already taken");
+            }
+            else if (!lib.PasswordIsEmpty(model.Password))
+            {
+                throw new AppException("Password is required");
+            }
+            else if (!lib.IsValidPassword(model.Password))
+            {
+                throw new AppException("Password must contain a number, uppercase letter, lowercase letter and must be minimal 5 characters long");
+            }
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });

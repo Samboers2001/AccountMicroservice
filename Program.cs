@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using AccountMicroservice.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -72,6 +73,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowLocalhost");
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
+
 
 app.UseHttpsRedirection();
 
