@@ -52,7 +52,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // builder.Services.AddHostedService<MessageBusSubscriber>();
-builder.Services.AddScoped<IMessageBusClient, MessageBusClient>();
+builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 
 
 
