@@ -5,7 +5,6 @@ using AccountMicroservice.AsyncDataServices.Interfaces;
 using AccountMicroservice.Helpers;
 using AccountMicroservice.MessageBusEvents;
 using AccountMicroservice.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -33,36 +32,34 @@ namespace AccountMicroservice.Controllers
             _messageBusClient = messageBusClient;
         }
 
-        [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] Login loginDto)
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] Login loginModel)
         {
-            var user = await _userManager.FindByNameAsync(loginDto.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
+            var user = await _userManager.FindByNameAsync(loginModel.Username);
+            if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
             {
+                var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
-
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTAuth:SecretKey"]));
-
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JWTAuth:ValidIssuer"],
-                    audience: _configuration["JWTAuth:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+                var token = GetToken(authClaims);
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });
             }
-            return Unauthorized();
+            else
+            {
+                throw new AppException("Username or password is incorrect");
+            }
         }
 
         [HttpGet]
