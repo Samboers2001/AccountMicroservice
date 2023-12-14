@@ -25,7 +25,7 @@ jobs:
       - name: Build and push multi-platform image
         run: |
           docker buildx create --use
-          docker buildx build --platform linux/amd64 -t your-image-name .
-          docker push your-image-name
+          docker buildx build --platform linux/amd64 -t orderingsystemcontainerregistry.azurecr.io/accountmicroservice .
+          docker push orderingsystemcontainerregistry.azurecr.io/accountmicroservice
         env:
           DOCKER_CLI_ARCH: amd64
