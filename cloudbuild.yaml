@@ -43,6 +43,18 @@ steps:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system'
 
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - 'K8S/account-service/account-service-hpa.yaml'
+
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-a'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system'
+
+    
 - name: 'gcr.io/cloud-builders/kubectl'
   args:
       - 'rollout'
