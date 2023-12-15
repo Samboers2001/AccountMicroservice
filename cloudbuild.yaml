@@ -12,17 +12,6 @@ steps:
     - 'push'
     - 'gcr.io/ordering-system-404411/accountmicroservice:latest'
 
-# Apply Kubernetes manifests for the account database
-- name: 'gcr.io/cloud-builders/kubectl'
-  args:
-    - 'apply'
-    - '-f'
-    - 'K8S/account-database/mariadb-account-secret.yaml'
-
-  env:
-    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
-
 - name: 'gcr.io/cloud-builders/kubectl'
   args:
     - 'apply'
@@ -31,7 +20,7 @@ steps:
 
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system'
 
 - name: 'gcr.io/cloud-builders/kubectl'
   args:
@@ -41,7 +30,7 @@ steps:
 
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system'
 
 # Apply Kubernetes manifests for the account service
 - name: 'gcr.io/cloud-builders/kubectl'
@@ -52,7 +41,7 @@ steps:
 
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system'
 
 - name: 'gcr.io/cloud-builders/kubectl'
   args:
@@ -65,7 +54,7 @@ steps:
 
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system-autopilot-cluster'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ordering-system'
 
 images: ['gcr.io/ordering-system-404411/accountmicroservice:latest']
 logsBucket: "gs://accountci-logs-bucket"
