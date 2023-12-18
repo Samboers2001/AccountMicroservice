@@ -16,9 +16,14 @@ jobs:
       # - name: Set up Kubernetes
       #   uses: azure/kubernetes-action@v1
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build and Push Docker Image
         run: |
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker build -t $DOCKER_USERNAME/accountmicroservice .
           docker push $DOCKER_USERNAME/accountmicroservice
 
