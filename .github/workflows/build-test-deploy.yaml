@@ -15,6 +15,10 @@ jobs:
 
       - name: Set up Docker Buildx  
         uses: docker/setup-buildx-action@v1
+
+      - name: Unlock Keychain
+        run: security -v unlock-keychain ~/Library/Keychains/login.keychain-db
+
  
       - name: Login to Docker Hub
         uses: docker/login-action@v1
