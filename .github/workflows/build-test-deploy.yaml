@@ -27,7 +27,7 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/accountmicroservice .
           docker push ${{ secrets.DOCKER_USERNAME }}/accountmicroservice
 
-      - name: Deploy Database Secret to Kubernetes
+      - name: Deploy Database Secret to Kubernetes 
         run: |
           kubectl apply -f K8S/account-mariadb/mariadb-account-secret.yaml
 
