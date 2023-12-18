@@ -13,8 +13,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Kubernetes
-        uses: azure/kubernetes-action@v1
+      # - name: Set up Kubernetes
+      #   uses: azure/kubernetes-action@v1
 
       - name: Build and Push Docker Image
         run: |
