@@ -30,7 +30,7 @@ jobs:
         run: docker push "${{ secrets.DOCKER_USERNAME }}/accountmicroservice"
 
       - name: Set up Kubernetes
-        uses: docker/setup-kube@v1
+        uses: steebchen/kubectl@v2.0.0
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
