@@ -19,7 +19,7 @@ steps:
     - 'K8S/account-database/account-mariadb-gke-pvc.yaml'
 
   env:
-    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-a'
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
     - 'CLOUDSDK_CONTAINER_CLUSTER=os-sam'
 
 - name: 'gcr.io/cloud-builders/kubectl'
@@ -29,7 +29,7 @@ steps:
     - 'K8S/account-database/mariadb-account-depl.yaml'
 
   env:
-    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-a'
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
     - 'CLOUDSDK_CONTAINER_CLUSTER=os-sam'
 
 # Apply Kubernetes manifests for the account service
@@ -40,7 +40,7 @@ steps:
     - 'K8S/account-service/account-depl.yaml'
 
   env:
-    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-a'
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
     - 'CLOUDSDK_CONTAINER_CLUSTER=os-sam'
 
 
@@ -51,7 +51,7 @@ steps:
     - 'K8S/account-service/account-service-hpa.yaml'
 
   env:
-    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-a'
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
     - 'CLOUDSDK_CONTAINER_CLUSTER=os-sam'
 
     
@@ -63,7 +63,7 @@ steps:
       - 'account-depl'
 
   env:
-    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-a'
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
     - 'CLOUDSDK_CONTAINER_CLUSTER=os-sam'
 
 images: ['gcr.io/ordering-system-404411/accountmicroservice:latest']
