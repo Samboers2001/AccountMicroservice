@@ -30,10 +30,14 @@ jobs:
         run: docker push "${{ secrets.DOCKER_USERNAME }}/accountmicroservice"
 
       - name: Set up Kubernetes
-        uses: azure/k8s-set-context@v1
+        uses: docker/setup-kube@v1
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
+      - name: Use Docker Desktop Kubernetes Context
+        run: |
+          kubectl config use-context docker-desktop
+          kubectl get pods
 
       - name: Deploy Database Secret to Kubernetes 
         run: |
