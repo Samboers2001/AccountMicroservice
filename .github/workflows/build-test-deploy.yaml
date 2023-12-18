@@ -37,5 +37,5 @@ jobs:
           kubectl apply -f K8S/account-mariadb/mariadb-account-depl.yaml
 
       - name: Deploy Application to Kubernetes
-        run: |
+        run: | 
           kubectl apply -f K8S/account-depl.yaml
