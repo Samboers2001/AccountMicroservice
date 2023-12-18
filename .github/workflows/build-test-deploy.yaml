@@ -1,0 +1,39 @@
+name: Deploy to Local Kubernetes
+
+on:
+  push:
+    branches:
+      - localdev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Kubernetes
+        uses: azure/kubernetes-action@v1
+
+      - name: Build and Push Docker Image
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker build -t $DOCKER_USERNAME/accountmicroservice .
+          docker push $DOCKER_USERNAME/accountmicroservice
+
+      - name: Deploy Database Secret to Kubernetes
+        run: |
+          kubectl apply -f K8S/account-mariadb/mariadb-account-secret.yaml
+
+      - name: Deploy Database Persistent Volume to Kubernetes
+        run: |
+          kubectl apply -f K8S/account-mariadb/mariadb-account-claim.yaml
+
+      - name: Deploy Database to Kubernetes
+        run: |
+          kubectl apply -f K8S/account-mariadb/mariadb-account-depl.yaml
+
+      - name: Deploy Application to Kubernetes
+        run: |
+          kubectl apply -f K8S/account-depl.yaml
