@@ -7,5 +7,5 @@ spec:
   accessModes:
     - ReadWriteMany
   resources:
-    requests:
+    requests: 
       storage: 200Mi
