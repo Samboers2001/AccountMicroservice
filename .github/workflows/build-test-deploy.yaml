@@ -33,7 +33,11 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           cp kubeconfig $HOME/.kube/config
-          kubectl config use-context minikube
+          kubectl config use-context docker-desktop
+
+      - name: Wait for Kubernetes to be Ready
+        run: |
+          kubectl wait --for=condition=Ready node --all --timeout=300s
 
       - name: Deploy Database Secret to Kubernetes 
         run: |
