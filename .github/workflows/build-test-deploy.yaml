@@ -32,8 +32,8 @@ jobs:
       - name: Set up Kubernetes
         run: |
           mkdir -p $HOME/.kube
-          cp kubeconfig $HOME/.kube/config
-          kubectl config use-context minikube
+          cp /Users/samboers/.kube/config $HOME/.kube/config
+          kubectl config use-context docker-desktop
 
       - name: Wait for Kubernetes to be Ready
         run: |
