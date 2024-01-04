@@ -53,4 +53,4 @@ jobs:
 
       - name: Deploy Application to Kubernetes
         run: | 
-          kubectl apply -f K8S/account-depl.yaml --validate=false
+          kubectl apply -f K8S/account-depl.yaml --validate=false 
