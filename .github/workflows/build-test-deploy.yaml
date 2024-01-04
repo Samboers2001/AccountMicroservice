@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           cp kubeconfig $HOME/.kube/config
-          kubectl config use-context docker-desktop
+          kubectl config use-context minikube
 
       - name: Wait for Kubernetes to be Ready
         run: |
