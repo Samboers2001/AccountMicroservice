@@ -32,7 +32,7 @@ jobs:
       - name: Set up Kubernetes
         run: |
           mkdir -p $HOME/.kube
-          cp ~/.kube/config $HOME/.kube/config
+          cp kubeconfig $HOME/.kube/config
           kubectl config use-context minikube
 
       - name: Deploy Database Secret to Kubernetes 
