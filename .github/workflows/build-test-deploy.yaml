@@ -37,16 +37,16 @@ jobs:
 
       - name: Deploy Database Secret to Kubernetes 
         run: |
-          kubectl apply -f K8S/account-mariadb/mariadb-account-secret.yaml
+          kubectl apply -f K8S/account-mariadb/mariadb-account-secret.yaml --validate=false
 
       - name: Deploy Database Persistent Volume to Kubernetes
         run: |
-          kubectl apply -f K8S/account-mariadb/mariadb-account-claim.yaml
+          kubectl apply -f K8S/account-mariadb/mariadb-account-claim.yaml --validate=false
  
       - name: Deploy Database to Kubernetes
         run: |
-          kubectl apply -f K8S/account-mariadb/mariadb-account-depl.yaml
+          kubectl apply -f K8S/account-mariadb/mariadb-account-depl.yaml --validate=false
 
       - name: Deploy Application to Kubernetes
         run: | 
-          kubectl apply -f K8S/account-depl.yaml
+          kubectl apply -f K8S/account-depl.yaml --validate=false
