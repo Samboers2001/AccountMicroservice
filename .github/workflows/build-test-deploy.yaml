@@ -29,11 +29,11 @@ jobs:
       - name: Push Docker Image
         run: docker push "${{ secrets.DOCKER_USERNAME }}/accountmicroservice"
 
-      - name: Set up Minikube
+      - name: Set up Kubernetes
         run: |
-          minikube start
+          mkdir -p $HOME/.kube
+          cp ~/.kube/config $HOME/.kube/config
           kubectl config use-context minikube
-          kubectl get pods
 
       - name: Deploy Database Secret to Kubernetes 
         run: |
