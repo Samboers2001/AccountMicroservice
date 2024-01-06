@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-secret.yaml'
-                    sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-claim.yaml'
+                    sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-claim.yaml' 
                     sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-depl.yaml'
                 }
             }
