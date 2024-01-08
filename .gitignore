@@ -1,0 +1,6 @@
+*.log
+*.txt
+node_modules/
+bin/
+obj/
+known_hosts.github
