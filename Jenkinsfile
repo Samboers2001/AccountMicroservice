@@ -21,7 +21,6 @@ pipeline {
         stage('Restore and Test') {
             steps {
                 script {
-                    // Change to the tests project directory
                     dir('/Users/samboers/development/order_management_system/AccountMicroservice.Tests') {
                         sh '/usr/local/share/dotnet/dotnet restore'
                         sh '/usr/local/share/dotnet/dotnet test'
@@ -33,7 +32,6 @@ pipeline {
         stage('Build docker image') {
             steps {
                 script {
-                    // Switch back to the main project directory for Docker build
                     dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
                         sh 'docker build -t samboers/accountmicroservice .'
                     }
@@ -55,7 +53,6 @@ pipeline {
         stage('Deploy Database to Kubernetes') {
             steps {
                 script {
-                    // Change to the main project directory for Kubernetes commands if needed
                     dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
                         sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-secret.yaml'
                         sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-claim.yaml' 
@@ -68,7 +65,6 @@ pipeline {
         stage('Deploy AccountMicroservice to Kubernetes') {
             steps {
                 script {
-                    // Change to the main project directory for Kubernetes commands if needed
                     dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
                         sh 'kubectl apply -f K8S/Local/account-service/account-depl.yaml'
                         sh 'kubectl apply -f K8S/Local/account-service/account-service-hpa.yaml'
@@ -80,7 +76,6 @@ pipeline {
         stage('Rollout Restart') {
             steps {
                 script {
-                    // Change to the main project directory for Kubernetes commands if needed
                     dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
                         sh 'kubectl rollout restart deployment account-depl'
                     }
