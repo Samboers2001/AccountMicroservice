@@ -11,6 +11,20 @@ pipeline {
                 git 'https://github.com/Samboers2001/AccountMicroservice'
             }
         }
+
+        stage('Checkout Test Project') {
+            steps {
+                git 'https://github.com/Samboers2001/AccountMicroservice.Tests'
+            }
+        }
+
+        stage('Restore and Test') {
+            steps {
+                script {
+                    sh 'dotnet restore AccountMicroservice.Tests/AccountMicroservice.Tests.csproj'
+                    sh 'dotnet test AccountMicroservice.Tests/AccountMicroservice.Tests.csproj'
+                }
+            }
         
         stage('Build docker image') {
             steps {
