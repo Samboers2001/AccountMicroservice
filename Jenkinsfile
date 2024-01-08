@@ -21,7 +21,8 @@ pipeline {
         stage('Restore and Test') {
             steps {
                 script {
-                    sh 'cd .. && ls -l AccountMicroservice.Tests'
+                    sh 'cd ../AccountMicroservice.Tests'
+                    sh 'ls -la'
                     sh '/usr/local/share/dotnet/dotnet restore AccountMicroservice.Tests/AccountMicroservice.Tests.csproj'
                     sh '/usr/local/share/dotnet/dotnet test AccountMicroservice.Tests/AccountMicroservice.Tests.csproj'
                 }
