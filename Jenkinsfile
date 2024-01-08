@@ -82,5 +82,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Wait for Deployment to be Ready') {
+            steps {
+                script {
+                    dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
+                        sh 'kubectl wait --for=condition=available --timeout=60s deployment/account-depl'
+                    }
+                }
+            }
+        }
+
+        stage('Load Testing') {
+            steps {
+                script {
+                    sh 'mkdir -p /Users/samboers/JMeter/htmlReport'
+                    sh 'jmeter -n -t /Users/samboers/JMeter/HTTP\ Request.jmx -l /Users/samboers/JMeter/results.csv -e -o /Users/samboers/JMeter/htmlReport'
+                }
+            }
+        }
     }
 }
