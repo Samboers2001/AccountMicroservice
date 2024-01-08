@@ -25,6 +25,7 @@ pipeline {
                     sh 'dotnet test AccountMicroservice.Tests/AccountMicroservice.Tests.csproj'
                 }
             }
+        }
         
         stage('Build docker image') {
             steps {

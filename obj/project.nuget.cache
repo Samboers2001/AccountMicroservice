@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Pc2A4p+slmGsHPWUuWya8GXl1+qVRCTzyHEAheFUeonJ+ZaPbKnQr7X3DGgbkOjAk+dsnvZRlhUVr7n7Qqtpow==",
+  "dgSpecHash": "AZSq6PesCQSqGc+Y9ro21n2zFPRYtjtl8nqttHKNodO5gDJR8bPBDeQ2R99aUeqWjdgcSeeqeNwJgtFK32vRvw==",
   "success": true,
-  "projectFilePath": "/Users/samboers/development/order_management_system/AccountServiceProject/AccountMicroservice/AccountMicroservice.csproj",
+  "projectFilePath": "/Users/samboers/development/order_management_system/AccountMicroservice/AccountMicroservice.csproj",
   "expectedPackageFiles": [
     "/Users/samboers/.nuget/packages/bouncycastle.cryptography/2.2.1/bouncycastle.cryptography.2.2.1.nupkg.sha512",
     "/Users/samboers/.nuget/packages/google.protobuf/3.21.9/google.protobuf.3.21.9.nupkg.sha512",

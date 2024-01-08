@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/samboers/development/order_management_system/AccountServiceProject/AccountMicroservice/AccountMicroservice.csproj": {}
+    "/Users/samboers/development/order_management_system/AccountMicroservice/AccountMicroservice.csproj": {}
   },
   "projects": {
-    "/Users/samboers/development/order_management_system/AccountServiceProject/AccountMicroservice/AccountMicroservice.csproj": {
+    "/Users/samboers/development/order_management_system/AccountMicroservice/AccountMicroservice.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/samboers/development/order_management_system/AccountServiceProject/AccountMicroservice/AccountMicroservice.csproj",
+        "projectUniqueName": "/Users/samboers/development/order_management_system/AccountMicroservice/AccountMicroservice.csproj",
         "projectName": "AccountMicroservice",
-        "projectPath": "/Users/samboers/development/order_management_system/AccountServiceProject/AccountMicroservice/AccountMicroservice.csproj",
+        "projectPath": "/Users/samboers/development/order_management_system/AccountMicroservice/AccountMicroservice.csproj",
         "packagesPath": "/Users/samboers/.nuget/packages/",
-        "outputPath": "/Users/samboers/development/order_management_system/AccountServiceProject/AccountMicroservice/obj/",
+        "outputPath": "/Users/samboers/development/order_management_system/AccountMicroservice/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/samboers/.nuget/NuGet/NuGet.Config"
