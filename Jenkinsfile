@@ -97,7 +97,7 @@ pipeline {
             steps {
                 script {
                     sh 'mkdir -p /Users/samboers/JMeter/htmlReport'
-                    sh '/opt/homebrew/bin/jmeter -n -t /Users/samboers/JMeter/LoginLoadTestResult.jmx -l /Users/samboers/JMeter/results.csv -e -o /Users/samboers/JMeter/htmlReport'
+                    sh '/opt/homebrew/bin/jmeter -n -t /Users/samboers/JMeter/LoginLoadTest.jmx -l /Users/samboers/JMeter/results.csv -e -o /Users/samboers/JMeter/htmlReport'
                 }
             }
         }
