@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using AccountMicroservice.AsyncDataServices.Interfaces;
 using AccountMicroservice.Helpers;
 using AccountMicroservice.MessageBusEvents;
 using AccountMicroservice.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AccountMicroservice.Controllers
 {
@@ -23,14 +18,13 @@ namespace AccountMicroservice.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
-        private readonly IMessageBusClient _messageBusClient;
-        private readonly Lib _lib = new Lib();
+        Lib lib = new Lib();
 
+        private readonly IMessageBusClient _messageBusClient;
         public AuthController(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration,
-            IMessageBusClient messageBusClient)
+            IConfiguration configuration, IMessageBusClient messageBusClient)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -93,29 +87,29 @@ namespace AccountMicroservice.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] Register model)
         {
-            if (!_lib.UsernameIsEmpty(model.Username))
+            if (!lib.UsernameIsEmpty(model.Username))
             {
                 throw new AppException("Name is required");
             }
-            else if (!_lib.EmailIsEmpty(model.Email))
+            else if (!lib.EmailIsEmpty(model.Email))
             {
                 throw new AppException("Email is required");
             }
-            else if (!_lib.IsValidEmail(model.Email))
+            else if (!lib.IsValidEmail(model.Email))
             {
-                throw new AppException($"Email '{model.Email}' is not valid");
+                throw new AppException("Email '" + model.Email + "' is not valid");
             }
             else if (_userManager.Users.Any(x => x.Email == model.Email))
             {
-                throw new AppException($"Email '{model.Email}' is already taken");
+                throw new AppException("Email '" + model.Email + "' is already taken");
             }
-            else if (!_lib.PasswordIsEmpty(model.Password))
+            else if (!lib.PasswordIsEmpty(model.Password))
             {
                 throw new AppException("Password is required");
             }
-            else if (!_lib.IsValidPassword(model.Password))
+            else if (!lib.IsValidPassword(model.Password))
             {
-                throw new AppException("Password must contain a number, uppercase letter, lowercase letter, and must be minimal 5 characters long");
+                throw new AppException("Password must contain a number, uppercase letter, lowercase letter and must be minimal 5 characters long");
             }
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
@@ -134,18 +128,8 @@ namespace AccountMicroservice.Controllers
             {
                 UserId = user.Id
             };
-
-            // Publish the message and wait for acknowledgment
-            var acknowledgmentReceived = await PublishAndWaitForAcknowledgment(userRegisteredEvent, "user.registered");
-
-            if (acknowledgmentReceived)
-            {
-                return Ok(new Response { Status = "Success", Message = "User created successfully!", Test = "Still, Yeah, Still works as expected!" });
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Acknowledgment not received. User creation might not have been processed successfully." });
-            }
+            _messageBusClient.PublishMessage(userRegisteredEvent, "user.registered");
+            return Ok(new Response { Status = "Success", Message = "User created successfully!", Test = "Still, Yeah, Still works as expected!" });
         }
 
         [HttpPost]
@@ -179,6 +163,7 @@ namespace AccountMicroservice.Controllers
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
+
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTAuth:SecretKey"]));
@@ -190,18 +175,6 @@ namespace AccountMicroservice.Controllers
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
             return token;
-        }
-
-        private async Task<bool> PublishAndWaitForAcknowledgment(object message, string routingKey)
-        {
-            _messageBusClient.PublishMessage(message, routingKey);
-
-            // You can add additional logic for waiting for acknowledgment here
-            // For simplicity, this example waits for a fixed duration
-            await Task.Delay(TimeSpan.FromSeconds(30));
-
-            // Return true for demonstration purposes (replace with actual acknowledgment check)
-            return true;
         }
     }
 }
