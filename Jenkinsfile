@@ -21,8 +21,11 @@ pipeline {
         stage('Restore and Test') {
             steps {
                 script {
-                    sh '/usr/local/share/dotnet/dotnet restore /Users/samboers/development/order_management_system/AccountMicroservice.Tests/AccountMicroservice.Tests.csproj'
-                    sh '/usr/local/share/dotnet/dotnet test /Users/samboers/development/order_management_system/AccountMicroservice.Tests/AccountMicroservice.Tests.csproj'                
+                    // Change to the tests project directory
+                    dir('/Users/samboers/development/order_management_system/AccountMicroservice.Tests') {
+                        sh '/usr/local/share/dotnet/dotnet restore'
+                        sh '/usr/local/share/dotnet/dotnet test'
+                    }
                 }
             }
         }
@@ -30,7 +33,10 @@ pipeline {
         stage('Build docker image') {
             steps {
                 script {
-                    sh 'docker build -t samboers/accountmicroservice .'
+                    // Switch back to the main project directory for Docker build
+                    dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
+                        sh 'docker build -t samboers/accountmicroservice .'
+                    }
                 }
             }
         }
@@ -49,9 +55,12 @@ pipeline {
         stage('Deploy Database to Kubernetes') {
             steps {
                 script {
-                    sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-secret.yaml'
-                    sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-claim.yaml' 
-                    sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-depl.yaml'
+                    // Change to the main project directory for Kubernetes commands if needed
+                    dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
+                        sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-secret.yaml'
+                        sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-claim.yaml' 
+                        sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-depl.yaml'
+                    }
                 }
             }
         }
@@ -59,8 +68,11 @@ pipeline {
         stage('Deploy AccountMicroservice to Kubernetes') {
             steps {
                 script {
-                    sh 'kubectl apply -f K8S/Local/account-service/account-depl.yaml'
-                    sh 'kubectl apply -f K8S/Local/account-service/account-service-hpa.yaml'
+                    // Change to the main project directory for Kubernetes commands if needed
+                    dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
+                        sh 'kubectl apply -f K8S/Local/account-service/account-depl.yaml'
+                        sh 'kubectl apply -f K8S/Local/account-service/account-service-hpa.yaml'
+                    }
                 }
             }
         }
@@ -68,7 +80,10 @@ pipeline {
         stage('Rollout Restart') {
             steps {
                 script {
-                    sh 'kubectl rollout restart deployment account-depl'
+                    // Change to the main project directory for Kubernetes commands if needed
+                    dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
+                        sh 'kubectl rollout restart deployment account-depl'
+                    }
                 }
             }
         }
