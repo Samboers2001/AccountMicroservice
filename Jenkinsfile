@@ -96,7 +96,8 @@ pipeline {
         stage('Load Testing') {
             steps {
                 script {
-                    sh 'rm -rf /Users/samboers/JMeter/htmlReport/*' // This will clear the directory
+                    sh 'rm -f /Users/samboers/JMeter/results.csv'
+                    sh 'rm -rf /Users/samboers/JMeter/htmlReport/*' 
                     sh 'mkdir -p /Users/samboers/JMeter/htmlReport'
                     sh '/opt/homebrew/bin/jmeter -n -t /Users/samboers/JMeter/LoginLoadTest.jmx -l /Users/samboers/JMeter/results.csv -e -o /Users/samboers/JMeter/htmlReport'
                 }
