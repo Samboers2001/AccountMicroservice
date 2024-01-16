@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb-account-sts
+  namespace: ordering-system
+spec:
+  serviceName: "mariadb-account"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mariadb-account
+  template:
+    metadata:
+      labels:
+        app: mariadb-account
+    spec:
+      initContainers:
+      - name: configure
+        image: busybox
+        command: ['sh', '-c', 'cp /config-map/* /etc/mysql/conf.d/; if [ $(hostname) = "mariadb-account-sts-0" ]; then echo "[mariadb]" > /etc/mysql/conf.d/wsrep.cnf; echo "wsrep_cluster_address=gcomm://" >> /etc/mysql/conf.d/wsrep.cnf; else echo "[mariadb]" > /etc/mysql/conf.d/wsrep.cnf; echo "wsrep_cluster_address=gcomm://mariadb-account-sts-0.mariadb-account.ordering-system.svc.cluster.local" >> /etc/mysql/conf.d/wsrep.cnf; fi']
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/mysql/conf.d
+        - name: mariadb-data
+          mountPath: /var/lib/mysql
+        - name: original-config
+          mountPath: /config-map
+          readOnly: true
+      containers:
+      - name: mariadb
+        image: mariadb
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-account-secret
+              key: mariadb-root-password
+        - name: WSREP_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: WSREP_NODE_ADDRESS
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        args: ["--wsrep-node-name=$(WSREP_NODE_NAME)", "--wsrep-node-address=$(WSREP_NODE_ADDRESS)"]
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mariadb-data
+        - mountPath: /etc/mysql/conf.d
+          name: config-volume
+      volumes:
+      - name: config-volume
+        emptyDir: {}
+      - name: original-config
+        configMap:
+          name: mariadb-config
+  volumeClaimTemplates:
+  - metadata:
+      name: mariadb-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 200Mi
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-account-clusterip-srv
+  namespace: ordering-system
+spec:
+  type: ClusterIP
+  selector:
+    app: mariadb-account
+  ports:
+  - name: mariadb
+    protocol: TCP
+    port: 3306
+    targetPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-account-loadbalancer
+  namespace: ordering-system
+spec:
+  type: LoadBalancer
+  selector:
+    app: mariadb-account
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
+

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-config
+  namespace: ordering-system
+data:
+  my.cnf: |
+    [mariadb]
+    # Basic MariaDB settings
+    bind-address = 0.0.0.0
+    default-storage-engine = innodb
+    innodb_autoinc_lock_mode = 2
+    innodb_doublewrite = 1
+    innodb_flush_log_at_trx_commit = 1
+    innodb_buffer_pool_size = 122M
+    query_cache_size = 0
+    query_cache_type = 0
+
+    # Galera-specific settings
+    wsrep_on = ON
+    wsrep_provider = /usr/lib/galera/libgalera_smm.so
+    wsrep_cluster_name = 'galera'
+    wsrep_sst_method = rsync
+
+    # Binlog settings
+    binlog_format = row
+    log_bin = mysql-bin
+    expire_logs_days = 7
