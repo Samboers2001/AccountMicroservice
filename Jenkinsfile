@@ -50,17 +50,17 @@ pipeline {
             }
         }
 
-        stage('Deploy Database to Kubernetes') {
-            steps {
-                script {
-                    dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
-                        sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-secret.yaml'
-                        sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-claim.yaml' 
-                        sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-depl.yaml'
-                    }
-                }
-            }
-        }
+        // stage('Deploy Database to Kubernetes') {
+        //     steps {
+        //         script {
+        //             dir('/Users/samboers/development/order_management_system/AccountMicroservice') {
+        //                 sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-secret.yaml'
+        //                 sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-claim.yaml' 
+        //                 sh 'kubectl apply -f K8S/Local/account-database/mariadb-account-depl.yaml'
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Deploy AccountMicroservice to Kubernetes') {
             steps {
